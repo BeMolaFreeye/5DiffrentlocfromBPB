@@ -1,0 +1,411 @@
+{
+  "log": {
+    "level": "warn",
+    "output": "box.log",
+    "timestamp": true
+  },
+  "dns": {
+    "servers": [
+      {
+        "tag": "dns-remote",
+        "address": "udp://1.1.1.1",
+        "address_resolver": "dns-direct"
+      },
+      {
+        "tag": "dns-trick-direct",
+        "address": "https://sky.rethinkdns.com/",
+        "detour": "direct-fragment"
+      },
+      {
+        "tag": "dns-direct",
+        "address": "1.1.1.1",
+        "address_resolver": "dns-local",
+        "detour": "direct"
+      },
+      {
+        "tag": "dns-local",
+        "address": "local",
+        "detour": "direct"
+      },
+      {
+        "tag": "dns-block",
+        "address": "rcode://success"
+      }
+    ],
+    "rules": [
+      {
+        "domain": [
+          "workermy.hamid-monti.workers.dev",
+          "www.speedtest.net"
+        ],
+        "server": "dns-direct"
+      },
+      {
+        "domain_suffix": ".ir",
+        "geosite": "ir",
+        "server": "dns-direct"
+      },
+      {
+        "domain": "cp.cloudflare.com",
+        "server": "dns-remote",
+        "rewrite_ttl": 3000
+      }
+    ],
+    "final": "dns-remote",
+    "static_ips": {
+      "sky.rethinkdns.com": [
+        "188.114.96.0",
+        "188.114.97.0",
+        "2a06:98c1:3120::",
+        "2a06:98c1:3121::",
+        "104.18.202.232",
+        "104.18.203.232",
+        "188.114.96.0",
+        "188.114.97.0",
+        "2a06:98c1:3120::",
+        "2a06:98c1:3121::"
+      ]
+    },
+    "independent_cache": true
+  },
+  "inbounds": [
+    {
+      "type": "tun",
+      "tag": "tun-in",
+      "mtu": 9000,
+      "inet4_address": "172.19.0.1/28",
+      "auto_route": true,
+      "strict_route": true,
+      "endpoint_independent_nat": true,
+      "stack": "mixed",
+      "sniff": true,
+      "sniff_override_destination": true
+    },
+    {
+      "type": "mixed",
+      "tag": "mixed-in",
+      "listen": "127.0.0.1",
+      "listen_port": 2334,
+      "sniff": true,
+      "sniff_override_destination": true
+    },
+    {
+      "type": "direct",
+      "tag": "dns-in",
+      "listen": "127.0.0.1",
+      "listen_port": 6450,
+      "override_address": "1.1.1.1",
+      "override_port": 53
+    }
+  ],
+  "outbounds": [
+    {
+      "type": "selector",
+      "tag": "select",
+      "outbounds": [
+        "auto",
+        "💦 hehe6 - workermy.hamid-monti... § 0",
+        "💦 hehe5 - www.speedtest.net § 1",
+        "💦 hehe4 - 172.67.184.182 § 2",
+        "💦 hehe3 - 104.21.36.38 § 3",
+        "💦 hehe2 - [2606:4700:3037::ac4... § 4",
+        "💦 hehe1 - [2606:4700:3035::681... § 5"
+      ],
+      "default": "auto"
+    },
+    {
+      "type": "urltest",
+      "tag": "auto",
+      "outbounds": [
+        "💦 hehe6 - workermy.hamid-monti... § 0",
+        "💦 hehe5 - www.speedtest.net § 1",
+        "💦 hehe4 - 172.67.184.182 § 2",
+        "💦 hehe3 - 104.21.36.38 § 3",
+        "💦 hehe2 - [2606:4700:3037::ac4... § 4",
+        "💦 hehe1 - [2606:4700:3035::681... § 5"
+      ],
+      "url": "http://cp.cloudflare.com/",
+      "interval": "10m0s",
+      "idle_timeout": "1h40m0s"
+    },
+    {
+      "type": "vless",
+      "tag": "💦 hehe6 - workermy.hamid-monti... § 0",
+      "tls_fragment": {
+        "enabled": true,
+        "size": "1-500",
+        "sleep": "0-500"
+      },
+      "server": "workermy.hamid-monti.workers.dev",
+      "server_port": 443,
+      "uuid": "0d720f62-c85b-40b5-8316-49f117bdd026",
+      "tls": {
+        "enabled": true,
+        "server_name": "WOrKerMy.HamiD-MoNTi.WORkErS.DEV",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "custom"
+        },
+        "tls_tricks": {
+          "mixedcase_sni": true,
+          "padding_mode": "random",
+          "padding_size": "1-1500"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/lzMi8qUehvbcCiY5",
+        "headers": {
+          "Host": "wORKeRMY.HaMid-MonTI.WorKErs.dev"
+        },
+        "max_early_data": 2560,
+        "early_data_header_name": "Sec-WebSocket-Protocol"
+      },
+      "packet_encoding": ""
+    },
+    {
+      "type": "vless",
+      "tag": "💦 hehe5 - www.speedtest.net § 1",
+      "tls_fragment": {
+        "enabled": true,
+        "size": "1-500",
+        "sleep": "0-500"
+      },
+      "server": "www.speedtest.net",
+      "server_port": 443,
+      "uuid": "0d720f62-c85b-40b5-8316-49f117bdd026",
+      "tls": {
+        "enabled": true,
+        "server_name": "wOrKERmY.hamId-MONTI.woRKERS.DeV",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "custom"
+        },
+        "tls_tricks": {
+          "mixedcase_sni": true,
+          "padding_mode": "random",
+          "padding_size": "1-1500"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/QDWe0ajSpJsjMRYy",
+        "headers": {
+          "Host": "woRkeRmy.hAMid-mOnTI.WoRKERS.deV"
+        },
+        "max_early_data": 2560,
+        "early_data_header_name": "Sec-WebSocket-Protocol"
+      },
+      "packet_encoding": ""
+    },
+    {
+      "type": "vless",
+      "tag": "💦 hehe4 - 172.67.184.182 § 2",
+      "tls_fragment": {
+        "enabled": true,
+        "size": "1-500",
+        "sleep": "0-500"
+      },
+      "server": "172.67.184.182",
+      "server_port": 443,
+      "uuid": "0d720f62-c85b-40b5-8316-49f117bdd026",
+      "tls": {
+        "enabled": true,
+        "server_name": "WOrkeRmY.haMid-mONti.WORKeRs.dEV",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "custom"
+        },
+        "tls_tricks": {
+          "mixedcase_sni": true,
+          "padding_mode": "random",
+          "padding_size": "1-1500"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/jAUC4uUI9l18lBs7",
+        "headers": {
+          "Host": "wORkerMy.HamID-MOntI.worKERS.dEV"
+        },
+        "max_early_data": 2560,
+        "early_data_header_name": "Sec-WebSocket-Protocol"
+      },
+      "packet_encoding": ""
+    },
+    {
+      "type": "vless",
+      "tag": "💦 hehe3 - 104.21.36.38 § 3",
+      "tls_fragment": {
+        "enabled": true,
+        "size": "1-500",
+        "sleep": "0-500"
+      },
+      "server": "104.21.36.38",
+      "server_port": 443,
+      "uuid": "0d720f62-c85b-40b5-8316-49f117bdd026",
+      "tls": {
+        "enabled": true,
+        "server_name": "wOrKeRMY.hAmId-mONTI.WORkERS.dev",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "custom"
+        },
+        "tls_tricks": {
+          "mixedcase_sni": true,
+          "padding_mode": "random",
+          "padding_size": "1-1500"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/zc3v31lhN2VXPdTw",
+        "headers": {
+          "Host": "WOrkeRMy.HamID-monti.WoRKErs.dev"
+        },
+        "max_early_data": 2560,
+        "early_data_header_name": "Sec-WebSocket-Protocol"
+      },
+      "packet_encoding": ""
+    },
+    {
+      "type": "vless",
+      "tag": "💦 Hehe2 - [2606:4700:3037::ac4... § 4",
+      "tls_fragment": {
+        "enabled": true,
+        "size": "1-500",
+        "sleep": "0-500"
+      },
+      "server": "2606:4700:3037::ac43:b8b6",
+      "server_port": 443,
+      "uuid": "0d720f62-c85b-40b5-8316-49f117bdd026",
+      "tls": {
+        "enabled": true,
+        "server_name": "wOrkerMY.hAMId-MOnTi.woRkERs.DEv",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "custom"
+        },
+        "tls_tricks": {
+          "mixedcase_sni": true,
+          "padding_mode": "random",
+          "padding_size": "1-1500"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/lJssXVd94CK1q58C",
+        "headers": {
+          "Host": "wOrkerMy.hamiD-mONtI.WOrkERS.deV"
+        },
+        "max_early_data": 2560,
+        "early_data_header_name": "Sec-WebSocket-Protocol"
+      },
+      "packet_encoding": ""
+    },
+    {
+      "type": "vless",
+      "tag": "💦 Hehe1 - [2606:4700:3035::681... § 5",
+      "tls_fragment": {
+        "enabled": true,
+        "size": "1-500",
+        "sleep": "0-500"
+      },
+      "server": "2606:4700:3035::6815:2426",
+      "server_port": 443,
+      "uuid": "0d720f62-c85b-40b5-8316-49f117bdd026",
+      "tls": {
+        "enabled": true,
+        "server_name": "WORkErMy.hAMid-MOntI.WOrKERS.Dev",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "custom"
+        },
+        "tls_tricks": {
+          "mixedcase_sni": true,
+          "padding_mode": "random",
+          "padding_size": "1-1500"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/Nw3omsBY80GrNuTQ",
+        "headers": {
+          "Host": "WoRKERmy.haMid-MoNti.wORKerS.dEV"
+        },
+        "max_early_data": 2560,
+        "early_data_header_name": "Sec-WebSocket-Protocol"
+      },
+      "packet_encoding": ""
+    },
+    {
+      "type": "dns",
+      "tag": "dns-out"
+    },
+    {
+      "type": "direct",
+      "tag": "direct"
+    },
+    {
+      "type": "direct",
+      "tag": "direct-fragment",
+      "tls_fragment": {
+        "enabled": true,
+        "size": "1-500",
+        "sleep": "0-500"
+      }
+    },
+    {
+      "type": "direct",
+      "tag": "bypass"
+    },
+    {
+      "type": "block",
+      "tag": "block"
+    }
+  ],
+  "route": {
+    "geoip": {
+      "path": "geo-assets/sagernet-sing-geoip-geoip.db"
+    },
+    "geosite": {
+      "path": "geo-assets/sagernet-sing-geosite-geosite.db"
+    },
+    "rules": [
+      {
+        "inbound": "dns-in",
+        "outbound": "dns-out"
+      },
+      {
+        "port": 53,
+        "outbound": "dns-out"
+      },
+      {
+        "clash_mode": "Direct",
+        "outbound": "direct"
+      },
+      {
+        "clash_mode": "Global",
+        "outbound": "select"
+      },
+      {
+        "domain_suffix": ".ir",
+        "geosite": "ir",
+        "geoip": "ir",
+        "outbound": "bypass"
+      }
+    ],
+    "final": "select",
+    "auto_detect_interface": true,
+    "override_android_vpn": true
+  },
+  "experimental": {
+    "cache_file": {
+      "enabled": true,
+      "path": "clash.db"
+    },
+    "clash_api": {
+      "external_controller": "127.0.0.1:6756",
+      "secret": "PBOLwQg0Cd5lnO7F"
+    }
+  }
